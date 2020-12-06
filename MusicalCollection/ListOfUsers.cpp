@@ -1,5 +1,7 @@
 #include "ListOfUsers.h"
 
+//A function that converts a date in format "dd-mm-yyyy" to date in with integers in order to 
+//eventually comparing dates
 void ListOfUsers::toDate(std::string& str, int& y, int& m, int& d)
 {
 	int place = 0;
@@ -14,9 +16,24 @@ void ListOfUsers::toDate(std::string& str, int& y, int& m, int& d)
 	}
 	v.push_back(str);
 
-	y = stoi(v.at(0));
+	d = stoi(v.at(0));
 	m = stoi(v.at(1));
-	d = stoi(v.at(2));
+	y = stoi(v.at(2));
+}
+
+void ListOfUsers::strToVector(std::string genres, std::vector<std::string>& genresCollection)
+{
+	int place = 0;
+	std::string token, delimeter = " ";
+
+	while ((place = genres.find(delimeter)) != std::string::npos)
+	{
+		token = genres.substr(0, place);
+		genresCollection.push_back(token);
+		genres.erase(0, place + delimeter.length());
+	}
+
+	genresCollection.push_back(genres);
 }
 
 //A function that searches the file for an user
@@ -41,16 +58,33 @@ bool ListOfUsers::userExists(std::string username, std::string password)
 	{
 		if (line.find(username) != std::string::npos) 
 		{
-			usr = true;
+			if (username == line)
+			{
+				usr = true;
+			}
 		}
-		if (line.find(password) != std::string::npos)
+ 		if (line.find(password) != std::string::npos)
 		{
-			pas = true;
+			if (password == line)
+			{
+				pas = true;
+			}
+		}
+		if (usr && pas)
+		{
+			break;
+		}
+		if (line == "___\r")
+		{
+			usr = false;
+			pas = false;
 		}
 	}
 	
+	f_inout.close();
+
 	return usr && pas;
-}
+} 
 
 //A function that adds an user
 void ListOfUsers::addUser(std::string _username, std::string _password, std::string _fullName, Date _birthdate,
@@ -82,6 +116,7 @@ void ListOfUsers::changeProfileData(std::string user)
 	std::string strData;
 	int y, m, d;
 	char aOrR = ' ';
+	std::vector<User> listOfUsersHelper;
 
 	for (User u : listOfUsers)
 	{
@@ -89,23 +124,24 @@ void ListOfUsers::changeProfileData(std::string user)
 		{
 			switch (choice)
 			{
-				case 'U': std::cout << "Please type your new username."; std::cin >> strData; 
+				case 'U': std::cout << "Please type your new username: "; std::cin >> strData;
 						  u.setUsername(strData); break;
-				case 'P': std::cout << "Please type your new password."; std::cin >> strData;
+				case 'P': std::cout << "Please type your new password: "; std::cin >> strData;
 						  u.setPassword(strData); break;
-				case 'F': std::cout << "Please type your new fullname."; std::cin >> strData; break;
+				case 'F': std::cout << "Please type your new fullname: "; std::cin >> strData;
 						  u.setFullName(strData); break;
-				case 'B': std::cout << "Please type your new birthdate."; std::cin >> strData; break;
-				case 'G': std::cout << "  -Type A to add a favourite genre." << std::endl;
-						  std::cout << "  -Type R to remove a favourite genre." << std::endl;
+				case 'B': std::cout << "Please type your new birthdate: "; std::cin >> strData; break;
+				case 'G': std::cout << "-Type A to add a favourite genre." << std::endl;
+						  std::cout << "-Type R to remove a favourite genre." << std::endl;
 						  std::cin >> aOrR; break;
-				default: break;
+			default: break;
 			}
 
 			if (choice == 'B')
 			{
 				toDate(strData, y, m, d);
 				Date date(y, m, d);
+				u.setBirthdate(date);
 			}
 
 			if (aOrR == 'A')
@@ -123,14 +159,21 @@ void ListOfUsers::changeProfileData(std::string user)
 				u.removeGenre(g);
 			}
 		}
+		std::vector<std::string> favGenres;
+		strToVector(u.getGenres(), favGenres);
+	
+		listOfUsersHelper.push_back(User(u.getUsername(), u.getPassword(), u.getFullName(), u.getBirthdate(), favGenres));
 	}
+
+	listOfUsers = listOfUsersHelper;
+	//printUsers();
 }
 
 std::ostream& operator << (std::ostream& output, const ListOfUsers& list)
 {
 	for (User user : list.listOfUsers)
 	{
-		output << user;
+		output << user << "\n___\r\n";
 	}
 
     return output;

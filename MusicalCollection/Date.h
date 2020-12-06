@@ -9,6 +9,7 @@ class Date
 
 public:
     Date(const int _y = 1, const int _m = 1, const int _d = 1);
+    Date& operator= (const Date& other);
 
     bool operator == (Date otherDateTime);
     bool operator < (Date otherDateTime);

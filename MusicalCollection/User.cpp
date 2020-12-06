@@ -60,6 +60,58 @@ void User::addGenre(std::string genre)
 	favouriteGenres.push_back(genre);
 }
 
+void User::removeSpace(std::string& str)
+{
+	std::string strWithoutSpacesAfter;
+
+	for (int i = 0; str[i]; i++)
+	{
+		if (str[i] == ' ' && str[i + 1] == '\0')
+		{
+			break;
+		}
+		else
+		{
+			strWithoutSpacesAfter += str[i];
+		}
+	}
+
+	str = strWithoutSpacesAfter;
+}
+
+void User::removeSpaces(std::string& str)
+{
+	std::string strWithoutSpacesAfter;
+
+	for (int i = 0; str[i]; i++)
+	{
+		if (str[i] == ' ' && str[i + 1] == ' ')
+		{
+			break;
+		}
+		else
+		{
+			strWithoutSpacesAfter += str[i];
+		}
+	}
+
+	str = strWithoutSpacesAfter;
+}
+
+std::string User::getGenres()
+{
+	std::string allGenres;
+
+	for (std::string str : favouriteGenres)
+	{
+		removeSpaces(str);
+		allGenres += str + " ";
+	}
+
+	removeSpace(allGenres);
+	return allGenres;
+}
+
 void User::removeGenre(std::string genre)
 {
 	int index = 0;

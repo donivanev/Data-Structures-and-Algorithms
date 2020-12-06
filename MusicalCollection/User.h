@@ -26,6 +26,9 @@ public:
 	void setFullName(std::string _fullName);
 	Date getBirthdate();
 	void setBirthdate(Date _birthdate);
+	void removeSpace(std::string& str);
+	void removeSpaces(std::string& str);
+	std::string getGenres();
 	void addGenre(std::string genre);
 	void removeGenre(std::string genre);
 

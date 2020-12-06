@@ -12,8 +12,11 @@ private:
 	ListOfUsers listOfUsers;
 
 	void toDate(std::string& str, int& y, int& m, int& d);
+	void toDateFromFile(std::string& str, int& y, int& m, int& d);
 	void save();
+	void actionsAfterLogIn();
+	void loadDataToCollections();
 
 public:
-	void processCommand(std::string choice, std::string user, std::string pass);
+	void processCommand(std::string choice, std::string user, std::string pass, bool& flag);
 };

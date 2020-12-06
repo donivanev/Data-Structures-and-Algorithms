@@ -8,6 +8,7 @@ void message()
 	std::cout << "Please type one of the following commands: " << std::endl;
 	std::cout << "[Sign in] - For users who already have registration." << std::endl;
 	std::cout << "[Sign up] - For users who don't have accounts." << std::endl;
+	std::cout << "[Exit] - Exit the program." << std::endl;
 }
 
 //Starting the application with message and Sign up/Sign in option
@@ -18,33 +19,40 @@ void startTheApplication(std::string& choice, std::string& user, std::string& pa
 	//std::cout << "[Sign in] Please enter your username and password." << std::endl;
 	//std::cout << "[Sign up] You don't have an account? You can register now.";
 
-	message();
-	std::getline(std::cin, choice);
+	ConsoleHandler console;
+	bool flag = false;
 
-	while (choice != "Sign in" && choice != "Sign up")
+	while (true)
 	{
-		std::cout << "Wrong command!" << std::endl;
 		message();
 		std::getline(std::cin, choice);
-	}
 
-	if (choice == "Sign in")
-	{
-		std::getline(std::cin, user);
-		std::getline(std::cin, pass);
+		if (choice == "Sign up")
+		{
+			console.processCommand(choice, user, pass, flag);
+		}
+		else if (choice == "Sign in")
+		{
+			std::getline(std::cin, user);
+			std::getline(std::cin, pass);
+
+			console.processCommand(choice, user, pass, flag);
+		}
+		else if (choice == "Exit")
+		{
+			console.processCommand(choice, user, pass, flag);
+			return;
+		}
 	}
 }
 
 int main()
 {
-	ConsoleHandler console;
 	std::string choice;
 	std::string user;
 	std::string pass;
 
 	startTheApplication(choice, user, pass);
-
-	console.processCommand(choice, user, pass);
 
 	return 0;
 }

@@ -2,7 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include "User.h"
-
+ 
 //A class that holds the information about all users
 
 class ListOfUsers
@@ -14,6 +14,7 @@ private:
 
 public:
 	void toDate(std::string& str, int& y, int& m, int& d);
+	void strToVector(std::string genres, std::vector<std::string>& genresCollection);
 	bool userExists(std::string user, std::string pass);
 	void addUser(std::string _username, std::string _password, std::string _fullName, Date _birthdate,
 				 std::vector<std::string> _favouriteGenres);

@@ -7,6 +7,18 @@ Date::Date(const int _y, const int _m, const int _d)
     this->day = _d;
 }
 
+Date& Date::operator=(const Date& other)
+{
+    if (this != &other)
+    {
+        this->year = other.year;
+        this->month = other.month;
+        this->day = other.day;
+
+        return *this;
+    }
+}
+
 bool Date::operator == (Date otherDate)
 {
     if (this->year == otherDate.year && this->month == otherDate.month && this->day == otherDate.day)
