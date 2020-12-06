@@ -47,6 +47,40 @@ void ConsoleHandler::toDateFromFile(std::string& str, int& y, int& m, int& d)
 	y = stoi(v.at(2));
 }
 
+void ConsoleHandler::strToVector(std::string genres, std::vector<std::string>& genresCollection)
+{
+	int place = 0;
+	std::string token, delimeter = " ";
+
+	while ((place = genres.find(delimeter)) != std::string::npos)
+	{
+		token = genres.substr(0, place);
+		genresCollection.push_back(token);
+		genres.erase(0, place + delimeter.length());
+	}
+
+	genresCollection.push_back(genres);
+}
+
+void ConsoleHandler::removeSpace(std::string& str)
+{
+	std::string strWithoutSpacesAfter;
+
+	for (int i = 0; str[i]; i++)
+	{
+		if (str[i] == ' ' && str[i + 1] == '\0')
+		{
+			break;
+		}
+		else
+		{
+			strWithoutSpacesAfter += str[i];
+		}
+	}
+
+	str = strWithoutSpacesAfter;
+}
+
 //Save data in a file
 void ConsoleHandler::save()
 {
@@ -90,7 +124,9 @@ void ConsoleHandler::loadDataToCollections()
 
 		if(index > 4 && line != "___\r")
 		{
-			favGenres.push_back(line);
+			removeSpace(line);
+			//favGenres.push_back(line);
+			strToVector(line, favGenres);
 		}
 
 		if (line.find("___") != std::string::npos)
@@ -146,6 +182,9 @@ void ConsoleHandler::processCommand(std::string choice, std::string user, std::s
 				case 1: listOfUsers.changeProfileData(user); break;
 				case 2: /*addSong();*/ break;
 				case 3: /*generatePlaylist();*/ break;
+				case 4: /*savePlaylistAs();*/ break;
+				case 5: /*loadPlaylistByName();*/ break;
+				case 6: /*setRating();*/ break;
 
 				default: break;
 			}

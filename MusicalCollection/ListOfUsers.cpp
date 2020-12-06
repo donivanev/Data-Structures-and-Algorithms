@@ -160,7 +160,7 @@ void ListOfUsers::changeProfileData(std::string user)
 			}
 		}
 		std::vector<std::string> favGenres;
-		strToVector(u.getGenres(), favGenres);
+		strToVector(u.getGenres(), favGenres); 
 	
 		listOfUsersHelper.push_back(User(u.getUsername(), u.getPassword(), u.getFullName(), u.getBirthdate(), favGenres));
 	}

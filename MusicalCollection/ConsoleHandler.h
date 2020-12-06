@@ -13,6 +13,8 @@ private:
 
 	void toDate(std::string& str, int& y, int& m, int& d);
 	void toDateFromFile(std::string& str, int& y, int& m, int& d);
+	void strToVector(std::string genres, std::vector<std::string>& genresCollection);
+	void removeSpace(std::string& str);
 	void save();
 	void actionsAfterLogIn();
 	void loadDataToCollections();
