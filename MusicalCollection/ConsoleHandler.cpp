@@ -180,7 +180,7 @@ void ConsoleHandler::processCommand(std::string choice, std::string user, std::s
 			switch (number)
 			{
 				case 1: listOfUsers.changeProfileData(user); break;
-				case 2: /*addSong();*/ break;
+				case 2: listOfUsers.addSong(); break;
 				case 3: /*generatePlaylist();*/ break;
 				case 4: /*savePlaylistAs();*/ break;
 				case 5: /*loadPlaylistByName();*/ break;

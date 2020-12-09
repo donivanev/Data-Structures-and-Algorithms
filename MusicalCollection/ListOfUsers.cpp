@@ -36,6 +36,38 @@ void ListOfUsers::strToVector(std::string genres, std::vector<std::string>& genr
 	genresCollection.push_back(genres);
 }
 
+void ListOfUsers::removeSpace(std::string& str)
+{
+	std::string strWithoutSpacesAfter;
+
+	for (int i = 0; str[i]; i++)
+	{
+		if (str[i] == ' ' && str[i + 1] == '\0')
+		{
+			break;
+		}
+		else
+		{
+			strWithoutSpacesAfter += str[i];
+		}
+	}
+
+	str = strWithoutSpacesAfter;
+}
+
+
+void ListOfUsers::saveSong(std::set<Song> listOfSongs)
+{
+	f_inout.open("songs.txt", std::ios::out);
+	//f_inout.clear();
+	for (Song song : listOfSongs)
+	{
+		f_inout << song << "\n-----";
+		f_inout << std::endl;
+	}
+	f_inout.close();
+}
+
 //A function that searches the file for an user
 bool ListOfUsers::userExists(std::string username, std::string password)
 {
@@ -100,6 +132,32 @@ void ListOfUsers::printUsers()
 	{
 		u.printUser();
 	}
+}
+
+void ListOfUsers::returnSongsToCollection()
+{
+	f_inout.open("songs.txt");
+
+	std::string line;
+	std::vector<std::string> arrOfData;
+
+	while (std::getline(f_inout, line))
+	{
+		if (line != "-----\r")
+		{
+			arrOfData.push_back(line);
+		}
+
+		if (line.find("-----") != std::string::npos)
+		{
+			Song song(arrOfData[0], arrOfData[1], arrOfData[2], arrOfData[3], stoi(arrOfData[4]), 
+					  atof(arrOfData[5].c_str()));
+			listOfSongs.insert(song);
+			arrOfData.clear();
+		}
+	}
+
+	f_inout.close();
 }
 
 void ListOfUsers::changeProfileData(std::string user)
@@ -167,6 +225,27 @@ void ListOfUsers::changeProfileData(std::string user)
 
 	listOfUsers = listOfUsersHelper;
 	//printUsers();
+}
+
+void ListOfUsers::addSong()
+{
+	std::cout << "Please enter on a separate lines the following things: " <<
+		"\nname, singer, genre, album, year, rating." << std::endl;
+
+	std::string info;
+	std::vector<std::string> arrOfData; 
+
+	while (info != "Submit")
+	{
+		std::getline(std::cin, info);
+		arrOfData.push_back(info);
+	}
+
+	Song song(arrOfData[1], arrOfData[2], arrOfData[3], arrOfData[4], stoi(arrOfData[5]), atof(arrOfData[6].c_str()));
+
+	returnSongsToCollection();
+	listOfSongs.insert(song);
+	saveSong(listOfSongs);
 }
 
 std::ostream& operator << (std::ostream& output, const ListOfUsers& list)

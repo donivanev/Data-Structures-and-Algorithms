@@ -12,30 +12,30 @@ private:
 	std::string singer;
 	std::string genre;
 	std::string album;
-	Date year;
-	double rating;
+	int year;
+	double rating;	
 
 public:
 	Song(std::string _name, std::string _singer, std::string _genre, std::string _album, 
-		Date _year, double _rating);
+		int _year, double _rating);
 	std::string getName();
 	std::string getSinger();
 	std::string getGenre();
 	std::string getAlbum();
 	Date getYear();
 	double getRating();
+	bool operator < (const Song& s) const;
+	friend std::ostream& operator << (std::ostream& output, const Song& song);
 };
 
-
 /*
-Промяна на данни, включително добавяне или премахване на жанр от любимите
 Добавяне на песен
 
 Генериране на плейлист с определен максимален размер по дадени критерии. 
 Тези критерии да могат да се комбинират с логически операции И и ИЛИ и да се подреждат по приоритет. 
 Плейлиста да е подреден според критериите и след това по азбучен ред на песните. 
 
-Критерии, които задължително трябва да поддържате, са:
+Критерии:
 Рейтинг, по-голям от определена стойност
 Включване или изключване на дадено множество жанрове
 Да са само от любимите на потребителя жанрове
