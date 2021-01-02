@@ -2,7 +2,7 @@
 
 //A constructor that initializes User data
 User::User(std::string _username = "", std::string _password = "", std::string _fullName = "", 
-	Date _birthdate = Date(), std::vector<std::string> _favouriteGenres = std::vector<std::string>())
+	       Date _birthdate = Date(), std::vector<std::string> _favouriteGenres = std::vector<std::string>())
 {
 	username = _username;
 	password = _password;
@@ -125,6 +125,24 @@ void User::removeGenre(std::string genre)
 	}
 
 	favouriteGenres.erase(favouriteGenres.begin() + index);
+}
+
+bool User::isFromFavourites(std::string genre)
+{
+	for (std::string s : favouriteGenres)
+	{
+		if (genre == s)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+void User::pushInPlaylist(Playlist playlist)
+{
+	playlistsCollection.insert(playlist);
 }
 
 void User::printUser()

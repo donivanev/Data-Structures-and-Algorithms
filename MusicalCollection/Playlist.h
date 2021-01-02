@@ -5,6 +5,14 @@
 
 class Playlist
 {
+
+private:
+	int number;
 	std::list<Song> listOfSongs;
+
+public:
+
+	bool operator < (const Playlist& other) const;
+	void addSongToPlaylist(Song song);
 };
 

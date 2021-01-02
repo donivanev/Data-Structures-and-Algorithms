@@ -1,7 +1,9 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <set>
 #include "Date.h"
+#include "Playlist.h"
 
 //A class that holds the information about the user
 
@@ -13,6 +15,7 @@ private:
 	std::string fullName;
 	Date birthdate;
 	std::vector<std::string> favouriteGenres;
+	std::set<Playlist> playlistsCollection;
 
 public:
 	User(std::string _username, std::string _password, std::string _fullName, Date _birthdate, 
@@ -32,6 +35,8 @@ public:
 	void addGenre(std::string genre);
 	void removeGenre(std::string genre);
 
+	bool isFromFavourites(std::string genre);
+	void pushInPlaylist(Playlist playlist);
 	void printUser();
 	friend std::ostream& operator << (std::ostream& output, const User& user);
 };

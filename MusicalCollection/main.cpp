@@ -8,23 +8,23 @@ void message()
 	std::cout << "Please type one of the following commands: " << std::endl;
 	std::cout << "[Sign in] - For users who already have registration." << std::endl;
 	std::cout << "[Sign up] - For users who don't have accounts." << std::endl;
-	std::cout << "[Exit] - Exit the program." << std::endl;
+	std::cout << "[Exit]    - Exit the program." << std::endl;
 }
 
 //Starting the application with message and Sign up/Sign in option
 void startTheApplication(std::string& choice, std::string& user, std::string& pass)
 {
-	std::cout << "\t\t#\tWelcome to Musical Collection!\t\t#\t" << std::endl;
-	std::cout << "\t\tHere you can enjoy the music you love listen to!!\t\t\r\n" << std::endl;
+	std::cout << "\t\t#          Welcome to Musical Collection!          #\t" << std::endl;
+	std::cout << "\t\tHere you can enjoy the music you love listening to!!\t\t\r\n" << std::endl;
 	//std::cout << "[Sign in] Please enter your username and password." << std::endl;
 	//std::cout << "[Sign up] You don't have an account? You can register now.";
 
 	ConsoleHandler console;
 	bool flag = false;
+	message();
 
 	while (true)
 	{
-		message();
 		std::getline(std::cin, choice);
 
 		if (choice == "Sign up")
@@ -38,9 +38,10 @@ void startTheApplication(std::string& choice, std::string& user, std::string& pa
 
 			console.processCommand(choice, user, pass, flag);
 		}
-		else if (choice == "Exit")
+		else if (choice == "Exit" || choice == "")
 		{
-			console.processCommand(choice, user, pass, flag);
+			//console.processCommand(choice, user, pass, flag);
+			std::cout << "Exiting the program...";
 			return;
 		}
 	}

@@ -17,6 +17,7 @@ private:
 	void removeSpace(std::string& str);
 	void save();
 	void actionsAfterLogIn();
+	bool isAlreadyRegisteredUser(std::string username);
 	void loadDataToCollections();
 
 public:

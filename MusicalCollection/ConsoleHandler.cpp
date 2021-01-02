@@ -1,12 +1,5 @@
 #include "ConsoleHandler.h"
 
-/*void message()
-{
-	std::cout << "Please type one of the following commands: " << std::endl;
-	std::cout << "[Sign in] - For users who already have registration." << std::endl;
-	std::cout << "[Sign up] - For users who don't have accounts." << std::endl;
-}*/
-
 //A function that converts a date in format "dd-mm-yyyy" to date in with integers in order to 
 //eventually comparing dates
 void ConsoleHandler::toDate(std::string& str, int& y, int& m, int& d)
@@ -102,6 +95,26 @@ void ConsoleHandler::actionsAfterLogIn()
 	std::cout << "5 - Load playlist" << std::endl;
 	std::cout << "6 - Information about all the songs in this playlist" << std::endl;
 	std::cout << "7 - Set rating" << std::endl;
+	std::cout << "8 - Exit" << std::endl;
+}
+
+bool ConsoleHandler::isAlreadyRegisteredUser(std::string username)
+{
+	f_inout.open("users.txt");
+	std::string line;
+	bool isAlreadyInCollection = false;
+
+	while (std::getline(f_inout, line))
+	{
+		if (line == username)
+		{
+			isAlreadyInCollection = true;
+		}
+	}
+
+	f_inout.close();
+
+	return isAlreadyInCollection;
 }
 
 void ConsoleHandler::loadDataToCollections()
@@ -125,7 +138,6 @@ void ConsoleHandler::loadDataToCollections()
 		if(index > 4 && line != "___\r")
 		{
 			removeSpace(line);
-			//favGenres.push_back(line);
 			strToVector(line, favGenres);
 		}
 
@@ -170,21 +182,23 @@ void ConsoleHandler::processCommand(std::string choice, std::string user, std::s
 			{
 				if (i != 0)
 				{
-					std::cout << "Wrong number. Choose a number between 1 and 7." << std::endl;
+					std::cout << "Wrong number. Choose a number between 1 and 8." << std::endl;
 				}
 				std::cin >> number;
 				i++;
 
-			} while (!(number > 0 && number < 8));
+			} while (!(number > 0 && number < 9));
 
 			switch (number)
 			{
 				case 1: listOfUsers.changeProfileData(user); break;
 				case 2: listOfUsers.addSong(); break;
-				case 3: /*generatePlaylist();*/ break;
-				case 4: /*savePlaylistAs();*/ break;
-				case 5: /*loadPlaylistByName();*/ break;
-				case 6: /*setRating();*/ break;
+				case 3: listOfUsers.generatePlaylist(user);  break;
+				case 4: /*listOfUsers.savePlaylistAs();*/ break;
+				case 5: /*listOfUsers.loadPlaylistByName();*/ break;
+				case 6: /*listOfUsers.showPlaylistInformation();*/ break;
+				case 7: /*listOfUsers.setRating();*/ break;
+				case 8: return; break;
 
 				default: break;
 			}
@@ -208,6 +222,12 @@ void ConsoleHandler::processCommand(std::string choice, std::string user, std::s
 		{
 			arrOfData.push_back(info);
 			std::getline(std::cin, info);
+			if (isAlreadyRegisteredUser(info))
+			{
+				std::cout << "Sorry, but this username is already taken." << std::endl;
+				std::cout << std::endl;
+				return;
+			}
 		}
 
 		for (int i = 5; i < arrOfData.size(); i++)
@@ -223,8 +243,8 @@ void ConsoleHandler::processCommand(std::string choice, std::string user, std::s
 		//listOfUsers.printUsers();
 		save();
 	}
-	else if (choice == "Exit")
-	{
+	//else if (choice == "Exit")
+	//{
 		//save();
-	}
+	//}
 }
