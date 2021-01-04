@@ -198,7 +198,7 @@ void ConsoleHandler::processCommand(std::string choice, std::string user, std::s
 				case 5: /*listOfUsers.loadPlaylistByName();*/ break;
 				case 6: /*listOfUsers.showPlaylistInformation();*/ break;
 				case 7: /*listOfUsers.setRating();*/ break;
-				case 8: return; break;
+				case 8: return; break; 
 
 				default: break;
 			}

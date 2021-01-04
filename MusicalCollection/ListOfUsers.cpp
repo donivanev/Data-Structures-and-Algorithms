@@ -36,7 +36,7 @@ void ListOfUsers::strToVector(std::string genres, std::vector<std::string>& genr
 	genresCollection.push_back(genres);
 }
 
-int strToInt(std::string s)
+int ListOfUsers::strToInt(std::string s)
 {
 	int number = 0, power = 0;
 
@@ -47,6 +47,18 @@ int strToInt(std::string s)
 	}
 
 	return number;
+}
+
+void ListOfUsers::reverseStr(std::string& str)
+{
+	int n = str.length();
+
+	for (int i = 0; i < n / 2; i++)
+	{
+		int helper = str[i];
+		str[i] = str[n - i - 1];
+		str[n - i - 1] = helper;
+	}
 }
 
 void ListOfUsers::removeSpace(std::string& str)
@@ -92,6 +104,7 @@ void ListOfUsers::processExpression(std::string expression, std::vector<std::str
 		expression.erase(0, place + delimeter.length());
 	}
 
+	token = expression.substr(0, place);
 	arr.push_back(token);
 }
 
@@ -282,18 +295,6 @@ void ListOfUsers::addSong()
 	saveSong(listOfSongs);
 }
 
-/*
-Генериране на плейлист с определен максимален размер по дадени критерии.
-Тези критерии да могат да се комбинират с логически операции И и ИЛИ и да се подреждат по приоритет.
-Плейлиста да е подреден според критериите и след това по азбучен ред на песните.
-
-Критерии:
-Рейтинг, по - голям от определена стойност
-Включване или изключване на дадено множество жанрове
-Да са само от любимите на потребителя жанрове
-Да са само от / след / преди определена година
-*/
-
 void ListOfUsers::generatePlaylist(std::string user)
 {
 	returnSongsToCollection();
@@ -313,20 +314,22 @@ void ListOfUsers::generatePlaylist(std::string user)
 
 	processExpression(expression, arr);
 
-	//processCriteria(arr);
-
-	char choice = ' ';
-	//std::cin >> choice;
-	std::string year;
-	double rating;
-	std::string genres;
-	bool favourites = false;
-	char criteria = ' ';
+	char choice = ' ', criteria = ' ';
+	std::string year = "", genres = "";
+	float rating = 0.0;
+	bool favourites = false, onlyOneElement = false;
 	std::string path[6] = { "L", "R", "RL", "RR", "RRL", "RRR" };
 	int index = 0, indexArr = 1;
 
-	t.addNode(arr.at(indexArr).c_str(), "");
-	indexArr += 2;
+	/*if (arr.size() == 1)
+	{
+		onlyOneElement = true;
+	}
+	else
+	{
+		t.addNode(arr.at(indexArr).c_str(), "");
+		indexArr += 2;
+	}*/
 
 	for (User u : listOfUsers)  
 	{
@@ -334,81 +337,129 @@ void ListOfUsers::generatePlaylist(std::string user)
 		{
 			Playlist playlist;
 
+			for (int i = 0; i < arr.size(); i += 2)
+			{
+				if (arr[i] == "1")
+				{
+					std::cout << "Please enter rating: ";
+					std::cin >> rating;
+				}
+				else if (arr[i] == "2")
+				{
+					std::cin.ignore();
+					std::cout << "Please enter add/remove [genres]: ";
+					std::getline(std::cin, genres);
+				}
+				else if (arr[i] == "3")
+				{
+					std::cout << "Do you want the songs to be only from your favourite genres? ";
+					std::cin >> choice;
+				}
+				else if (arr[i] == "4")
+				{
+					std::cin.ignore();
+					std::cout << "Please enter <, = or > [year] to select your filtering: ";
+					std::getline(std::cin, year);
+				}
+			}
+
 			for (Song song : listOfSongs)
 			{
-				for (int i = 0; i < arr.size(); i++)
-				{
-					if (arr[i] == "1")
-					{
-						std::cout << "Please enter rating: ";
-						std::cin >> rating;
+				bool isInRating = false, isInGenres = false, isInFavourites = false, isInYear = false;
 
-						song.getRating() < rating ? t.addNode("T", path[index].c_str())
+				if (arr.size() == 1)
+				{
+					onlyOneElement = true;
+				}
+				else
+				{
+					t.addNode(arr.at(indexArr).c_str(), "");
+					indexArr += 2;
+				}
+
+				for (int i = 0; i < arr.size(); i+=2)
+				{
+					if (rating != -1 && rating != 0.0 && isInRating == false)
+					{
+						song.getRating() > rating ? t.addNode("T", path[index].c_str())
 												  : t.addNode("F", path[index].c_str());
 						index++;
+						isInRating = true;
 					}
-					else if (arr[i] == "2")
+					else if (genres != "-" && genres != "" && isInGenres == false)
 					{
-						std::cout << "Please enter add/remove [genres]: ";
-						std::getline(std::cin, genres);
 						std::unordered_set<std::string> s;
 						char empty = ' ';
+
+						reverseStr(genres);
 
 						int place = 0;
 						std::string token, delimeter = " ";
 
-						while ((place = expression.find(delimeter)) != std::string::npos)
+						while ((place = genres.find(delimeter)) != std::string::npos)
 						{
-							token = expression.substr(0, place);
+							token = genres.substr(0, place);
+							reverseStr(token);
 							s.insert(token);
-							expression.erase(0, place + delimeter.length());
+							genres.erase(0, place + delimeter.length());
 						}
 
+						token = genres.substr(0, place);
+						reverseStr(token);
 						s.insert(token);
 
 						if (*(s.begin()) == "add")
 						{
-							
+							bool flag = true;
+
+							for (auto iter = s.begin(); iter != s.end(); ++iter)
+							{
+								if (song.getGenre() != *iter)
+								{
+									flag = false;
+									break;
+								}
+							}
+
+							flag ? t.addNode("F", path[index].c_str()) : t.addNode("F", path[index].c_str());
+							index++;
 						}
 						else if (*(s.begin()) == "remove")
 						{
+							bool flag = true;
 
+							for (auto iter = s.begin(); iter != s.end(); ++iter)
+							{
+								if (song.getGenre() == *iter)
+								{
+									flag = false;
+									break;
+								}
+							}
+
+							flag ? t.addNode("T", path[index].c_str()) : t.addNode("F", path[index].c_str());
+							index++;
 						}
-
-						for (auto iter = s.begin(); iter != s.end(); ++iter) 
+						else
 						{
-							if (*iter == "a")
-							{
-								
-							}
-							else if (*iter == "r")
-							{
-
-							}
-							else
-							{
-								std::cout << "Wrong command!";
-							}
+							std::cout << "Wrong command!";
 						}
-					}
-					else if (arr[i] == "3")
-					{
-						std::cin.ignore();
-						std::cout << "Do you want the songs to be only from your favourite genres? ";
-						std::cin >> choice;
 
+						isInGenres = true;
+					}
+					else if (choice != '-' && choice != ' ' && isInFavourites == false)
+					{
 						if (choice == 'y')
 						{
 							u.isFromFavourites(song.getGenre()) ? t.addNode("T", path[index].c_str())
 															    : t.addNode("F", path[index].c_str());
 							index++;
 						}
-					}
-					else if (arr[i] == "4")
-					{
-						std::cout << "Please enter <, = or > [year] to select your filtering: ";
-						std::getline(std::cin, year);
 
+						isInFavourites = true;
+					}
+					else if (year != "-" && year != "" && isInYear == false)
+					{
 						int y = strToInt(year.substr(2));
 
 						switch (year[0])
@@ -426,43 +477,39 @@ void ListOfUsers::generatePlaylist(std::string user)
 						}
 
 						index++;
+						isInYear = true;
 					}
 
-					t.addNode(arr.at(indexArr), path[index].c_str());
-					index++;
-					indexArr += 2;
+					if (!onlyOneElement)
+					{
+						if (indexArr < arr.size())
+						{
+							t.addNode(arr.at(indexArr), path[index].c_str());
+							index++;
+							indexArr += 2;
+						}
+					}
+				}
+				
+				if (t.evaluateExpression()) 
+				{
+					//playlist.setNumber(++number);
+					playlist.addSongToPlaylist(song);
 				}
 
-				//if (t.evaluateExpression())
-				//{
-					//playlist.addSongToPlaylist(song);
-				//}
+				t.clearTree();
 			}
 
-			//u.pushInPlaylist(playlist);
+			std::string name;
+			std::cout << "Please choose a name for your playlist: ";
+			std::cin.ignore();	
+			std::getline(std::cin, name);
+
+			playlist.setName(name);
+			u.pushInPlaylist(playlist);
 		}
 	}
-
-	//Тези критерии да могат да се комбинират с логически операции И и ИЛИ и да се подреждат по приоритет.
-	//Плейлиста да е подреден според критериите и след това по азбучен ред на песните.
-	//Playlist playlist;
-	//bool ? && ||
-	//1   rating > 4.5 => song.getRating() > rating => u.playlistsCollection.insert(Playlist(Song()))
-
-	//2   yes    if song.getGenre() is not contained in u.favouriteGenres => do not add
-	//    no     else													  => add
-
-	//3   add     addedGenresCollection    if song.getGenre() is in addedGenresCollection => add
-	//	  remove  removedGenresCollection  if song.getGenre() is in removedGenresCollection => do not add
-
-	//4   if < year => if song.getYear() < year => u.playlistsCollection.insert(Playlist(Song()))
-	//       = year => if song.getYear() == year => u.playlistsCollection.insert(Playlist(Song()))
- 	//       > year => if song.getYear() > year => u.playlistsCollection.insert(Playlist(Song()))
-
-	//playlist.addSongInPlaylist(song);
-
-	//1 && 2 || 3 && 4
-}
+}   
 
 std::ostream& operator << (std::ostream& output, const ListOfUsers& list)
 {

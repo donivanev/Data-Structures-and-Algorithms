@@ -19,33 +19,16 @@ public:
 
     bool isLogicalOperator(std::string c);
     bool toBool(std::string s);
-    void addNode(std::string element, const char* path) 
-    {
-        if (root == nullptr)
-        {
-            root = new Node(element);
-            return;
-        }
-
-        Node* curr = root;
-
-        while (path[1])
-        {
-            if (path[0] == 'L') curr = curr->left;
-            if (path[0] == 'R') curr = curr->right;
-            path++;
-        }
-
-        if (path[0] == 'L' && curr->left == nullptr)       curr->left = new Node(element);
-        else if (path[0] == 'R' && curr->right == nullptr) curr->right = new Node(element);
-    }
+    void addNode(std::string element, const char* path);
     bool evaluateExpression();
     void print();
+    void clearTree();
 
 private:
 
     Node* root;
     bool evaluateExpressionHelper(Node* node);
     void printHelper(Node* node);
+    void clearTreeHelper(Node* node);
 };
 

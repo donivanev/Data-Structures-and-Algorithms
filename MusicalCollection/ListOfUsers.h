@@ -6,7 +6,7 @@
 #include <queue>
 #include "User.h"
 #include "Song.h"
-#include "ExpressionTree.h"
+#include "ExpressionTree.cpp"
  
 //A class that holds the information about all users
 
@@ -23,6 +23,7 @@ public:
 	void toDate(std::string& str, int& y, int& m, int& d);
 	void strToVector(std::string genres, std::vector<std::string>& genresCollection);
 	int strToInt(std::string s);
+	void reverseStr(std::string& str);
 	void removeSpace(std::string& str);
 	bool userExists(std::string user, std::string pass);
 	void saveSong(std::set<Song> listOfSongs);
