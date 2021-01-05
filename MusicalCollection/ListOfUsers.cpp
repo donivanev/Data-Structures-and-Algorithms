@@ -160,9 +160,9 @@ bool ListOfUsers::userExists(std::string username, std::string password)
 
 //A function that adds an user
 void ListOfUsers::addUser(std::string _username, std::string _password, std::string _fullName, Date _birthdate,
-				          std::vector<std::string> _favouriteGenres)
+				          std::vector<std::string> _favouriteGenres, std::set<Playlist> _playlistsCollection)
 {
-	listOfUsers.push_back(User(_username, _password, _fullName, _birthdate, _favouriteGenres));
+	listOfUsers.push_back(User(_username, _password, _fullName, _birthdate, _favouriteGenres, _playlistsCollection));
 }
 
 //A function that prints all the users
@@ -267,7 +267,7 @@ void ListOfUsers::changeProfileData(std::string user)
 		std::vector<std::string> favGenres;
 		strToVector(u.getGenres(), favGenres); 
 	
-		listOfUsersHelper.push_back(User(u.getUsername(), u.getPassword(), u.getFullName(), u.getBirthdate(), favGenres));
+		listOfUsersHelper.push_back(User(u.getUsername(), u.getPassword(), u.getFullName(), u.getBirthdate(), favGenres, std::set<Playlist>()));
 	}
 
 	listOfUsers = listOfUsersHelper;
@@ -320,6 +320,8 @@ void ListOfUsers::generatePlaylist(std::string user)
 	bool favourites = false, onlyOneElement = false;
 	std::string path[6] = { "L", "R", "RL", "RR", "RRL", "RRR" };
 	int index = 0, indexArr = 1;
+
+	std::vector<User> listOfUsersHelper;
 
 	/*if (arr.size() == 1)
 	{
@@ -508,8 +510,31 @@ void ListOfUsers::generatePlaylist(std::string user)
 			playlist.setName(name);
 			u.pushInPlaylist(playlist);
 		}
+
+		listOfUsersHelper.push_back(u);
 	}
-}   
+
+	//because listOfUsers.push_back() gives error in rfor, we use helperVector
+	listOfUsers = listOfUsersHelper;
+}
+
+//Зареждане на даден плейлист по име
+//Показване на информация за всички песни текущия плейлист
+
+void ListOfUsers::loadPlaylistByName(std::string user)
+{
+	std::string name;
+	std::getline(std::cin, name);
+
+	for (User u : listOfUsers)
+	{
+		if (u.getUsername() == user)
+		{
+			//u.searchInPlaylistsCollection(name);
+			//p.getName() == name => show information about the playlist
+		}
+	}
+}
 
 std::ostream& operator << (std::ostream& output, const ListOfUsers& list)
 {

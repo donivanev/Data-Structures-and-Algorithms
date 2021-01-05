@@ -147,7 +147,7 @@ void ConsoleHandler::loadDataToCollections()
 			toDateFromFile(arrOfData[3], y, m, d);
 			Date date(y, m, d);
 
-			listOfUsers.addUser(arrOfData[0], arrOfData[1], arrOfData[2], date, favGenres);
+			listOfUsers.addUser(arrOfData[0], arrOfData[1], arrOfData[2], date, favGenres, std::set<Playlist>());
 			index = 0;
 			arrOfData.clear();
 			favGenres.clear();
@@ -239,7 +239,7 @@ void ConsoleHandler::processCommand(std::string choice, std::string user, std::s
 		toDate(arrOfData[4], y, m, d);
 		Date date(y, m, d);
 
-		listOfUsers.addUser(arrOfData[1], arrOfData[2], arrOfData[3], date, favGenres); 
+		listOfUsers.addUser(arrOfData[1], arrOfData[2], arrOfData[3], date, favGenres, std::set<Playlist>()); 
 		//listOfUsers.printUsers();
 		save();
 	}

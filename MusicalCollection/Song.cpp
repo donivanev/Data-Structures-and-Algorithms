@@ -1,7 +1,7 @@
 #include "Song.h"
 
 Song::Song(std::string _name = "", std::string _singer = "", std::string _genre = "", std::string _album = "",
-           int _year = 0, double _rating = 0)
+           int _year = 0, float _rating = 0)
 {
     name = _name;
     singer = _singer;
@@ -36,7 +36,7 @@ Date Song::getYear()
     return this->year;
 }
 
-double Song::getRating()
+float Song::getRating()
 {
     return this->rating;
 }

@@ -2,7 +2,8 @@
 
 //A constructor that initializes User data
 User::User(std::string _username = "", std::string _password = "", std::string _fullName = "", 
-	       Date _birthdate = Date(), std::vector<std::string> _favouriteGenres = std::vector<std::string>())
+	       Date _birthdate = Date(), std::vector<std::string> _favouriteGenres = std::vector<std::string>(),
+		   std::set<Playlist> _playlistsCollections = std::set<Playlist>())
 {
 	username = _username;
 	password = _password;
@@ -157,6 +158,14 @@ void User::printUser()
 		std::cout << genre << " ";
 	}
 
+	if (!playlistsCollection.empty())
+	{
+		for (Playlist p : playlistsCollection)
+		{
+			std::cout << p << std::endl;
+		}
+	}
+
 	std::cout << std::endl;
 }
 
@@ -170,6 +179,14 @@ std::ostream& operator << (std::ostream& output, const User& user)
 	for (std::string genre : user.favouriteGenres)
 	{
 		output << genre << " ";
+	}
+
+	if (!user.playlistsCollection.empty())
+	{
+		for (Playlist p : user.playlistsCollection)
+		{
+			output << p;
+		}
 	}
 
 	return output;

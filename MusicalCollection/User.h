@@ -19,7 +19,7 @@ private:
 
 public:
 	User(std::string _username, std::string _password, std::string _fullName, Date _birthdate, 
-		 std::vector<std::string> _favouriteGenres);
+		 std::vector<std::string> _favouriteGenres, std::set<Playlist> _playlistsCollection);
 
 	std::string getUsername();
 	void setUsername(std::string _username);

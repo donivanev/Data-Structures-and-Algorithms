@@ -29,11 +29,12 @@ public:
 	void saveSong(std::set<Song> listOfSongs);
 	void processExpression(std::string expression, std::vector<std::string>& arr);
 	void addUser(std::string _username, std::string _password, std::string _fullName, Date _birthdate,
-				 std::vector<std::string> _favouriteGenres);
+				 std::vector<std::string> _favouriteGenres, std::set<Playlist> _playlistsCollection);
 	void printUsers();
 	void returnSongsToCollection();
 	void changeProfileData(std::string user);
 	void addSong();
 	void generatePlaylist(std::string user);
+	void loadPlaylistByName(std::string user);
 	friend std::ostream& operator << (std::ostream& output, const ListOfUsers& listOfUsers);
 };

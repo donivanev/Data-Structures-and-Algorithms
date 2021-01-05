@@ -1,9 +1,13 @@
 #include "ExpressionTree.h"
 
 template <typename T>
-bool ExpressionTree<T>::isLogicalOperator(std::string c)
+bool ExpressionTree<T>::isLogicalOperator(std::string s)
 {
-    if (c == "&&" || c == "||") return true;
+    if (s == "&&" || s == "||")
+    {
+        return true;
+    }
+
     return false;
 }
 
@@ -63,10 +67,14 @@ bool ExpressionTree<T>::evaluateExpressionHelper(Node* node)
     int rightValue = evaluateExpressionHelper(node->right);
 
     if (node->data == "&&")
+    {
         return leftValue && rightValue;
+    }
 
     if (node->data == "||")
+    {
         return leftValue || rightValue;
+    }
 }
 
 template <typename T>
@@ -98,7 +106,10 @@ void ExpressionTree<T>::clearTree()
 template <typename T>
 void ExpressionTree<T>::clearTreeHelper(Node* node)
 {
-    if (node == nullptr) return;
+    if (node == nullptr)
+    {
+        return;
+    }
 
     clearTreeHelper(node->left);
     clearTreeHelper(node->right);

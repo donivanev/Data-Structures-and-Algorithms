@@ -6,18 +6,20 @@
 template <typename T>
 class ExpressionTree
 {
+
 public:
 
     struct Node
     {
         std::string data;
-        Node* left, * right;
-        Node(std::string newData, Node* left = nullptr, Node* right = nullptr) : data(newData), left(left), right(right) {};
+        Node* left, *right;
+        Node(std::string newData = "", Node* left = nullptr, Node* right = nullptr) 
+                                      : data(newData), left(left), right(right) {};
     };
 
     ExpressionTree() : root(nullptr) {}
 
-    bool isLogicalOperator(std::string c);
+    bool isLogicalOperator(std::string s);
     bool toBool(std::string s);
     void addNode(std::string element, const char* path);
     bool evaluateExpression();

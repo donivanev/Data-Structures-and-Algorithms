@@ -18,5 +18,7 @@ public:
 	void setNumber(int _number);
 	bool operator < (const Playlist& other) const;
 	void addSongToPlaylist(Song song);
+
+	friend std::ostream& operator << (std::ostream& output, const Playlist& playlist);
 };
 
