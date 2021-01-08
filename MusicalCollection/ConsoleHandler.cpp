@@ -40,6 +40,16 @@ void ConsoleHandler::toDateFromFile(std::string& str, int& y, int& m, int& d)
 	y = stoi(v.at(2));
 }
 
+bool ConsoleHandler::isValidDate(int y, int m, int d)
+{
+	if ((d < 1 || d > 31) || (m < 1 || m > 12))
+	{
+		return false;
+	}
+
+	return true;
+}
+
 void ConsoleHandler::strToVector(std::string genres, std::vector<std::string>& genresCollection)
 {
 	int place = 0;
@@ -100,21 +110,24 @@ void ConsoleHandler::actionsAfterLogIn()
 
 bool ConsoleHandler::isAlreadyRegisteredUser(std::string username)
 {
-	f_inout.open("users.txt");
-	std::string line;
+	//f_inout.open("users.txt");
+	//std::string line;
 	bool isAlreadyInCollection = false;
 
-	while (std::getline(f_inout, line))
+	/*while (std::getline(f_inout, line))
 	{
 		if (line == username)
 		{
 			isAlreadyInCollection = true;
 		}
-	}
+	}*/
+	
+	//listOfUsers.isAlreadyRegisteredUser(username) ? true : false;
+		
+	//f_inout.close();
 
-	f_inout.close();
-
-	return isAlreadyInCollection;
+	//return isAlreadyInCollection;r
+	return false;
 }
 
 void ConsoleHandler::loadDataToCollections()
@@ -124,6 +137,7 @@ void ConsoleHandler::loadDataToCollections()
 	std::string line;
 	std::vector<std::string> arrOfData;
 	std::vector<std::string> favGenres;
+	std::set<Playlist> playlists;
 	int index = 0, next = 0;
 
 	while (std::getline(f_inout, line))
@@ -165,7 +179,7 @@ void ConsoleHandler::processCommand(std::string choice, std::string user, std::s
 	{
 		loadDataToCollections();
 		flag = true;
-	}
+	} 
 
 	if (choice == "Sign in")
 	{
@@ -197,7 +211,7 @@ void ConsoleHandler::processCommand(std::string choice, std::string user, std::s
 				case 4: /*listOfUsers.savePlaylistAs();*/ break;
 				case 5: /*listOfUsers.loadPlaylistByName();*/ break;
 				case 6: /*listOfUsers.showPlaylistInformation();*/ break;
-				case 7: /*listOfUsers.setRating();*/ break;
+				case 7: listOfUsers.setRating(user); break;
 				case 8: return; break; 
 
 				default: break;
@@ -217,16 +231,44 @@ void ConsoleHandler::processCommand(std::string choice, std::string user, std::s
 		std::string info;
 		std::vector<std::string> arrOfData;
 		std::vector<std::string> favGenres;
+		int y, m, d;
+		bool notValid = false;
 
 		while (info != "Submit")
 		{
-			arrOfData.push_back(info);
 			std::getline(std::cin, info);
-			if (isAlreadyRegisteredUser(info))
+
+			if (arrOfData.size() == 3)
 			{
-				std::cout << "Sorry, but this username is already taken." << std::endl;
-				std::cout << std::endl;
-				return;
+				try
+				{
+					toDate(info, y, m, d);
+				}
+				catch (const std::exception&)
+				{
+					std::cout << "Please enter date in format dd-mm-yyyy!";
+				}
+
+				if (!isValidDate(y, m, d))
+				{
+					std::cout << "Please enter a valid date format!" << std::endl;
+					notValid = true;
+				}
+			}
+
+			if (arrOfData.size() == 1)
+			{
+				if (listOfUsers.userExists(info, ""))
+				{
+					std::cout << "Sorry, but this username is already taken. Try another one." << std::endl;
+					
+					arrOfData.clear();
+				}
+			}
+
+			if (!notValid)
+			{
+				arrOfData.push_back(info);
 			}
 		}
 
@@ -235,8 +277,7 @@ void ConsoleHandler::processCommand(std::string choice, std::string user, std::s
 			favGenres.push_back(arrOfData[i]);
 		}
 
-		int y, m, d;
-		toDate(arrOfData[4], y, m, d);
+		toDate(arrOfData[3], y, m, d);
 		Date date(y, m, d);
 
 		listOfUsers.addUser(arrOfData[1], arrOfData[2], arrOfData[3], date, favGenres, std::set<Playlist>()); 

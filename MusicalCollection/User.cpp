@@ -99,7 +99,7 @@ void User::removeSpaces(std::string& str)
 	str = strWithoutSpacesAfter;
 }
 
-std::string User::getGenres()
+/*std::string User::getGenres()
 {
 	std::string allGenres;
 
@@ -111,6 +111,11 @@ std::string User::getGenres()
 
 	removeSpace(allGenres);
 	return allGenres;
+}*/
+
+std::vector<std::string> User::getGenres()
+{
+	return this->favouriteGenres;
 }
 
 void User::removeGenre(std::string genre)
@@ -126,6 +131,21 @@ void User::removeGenre(std::string genre)
 	}
 
 	favouriteGenres.erase(favouriteGenres.begin() + index);
+}
+
+std::set<Playlist> User::getPlaylists()
+{
+	return this->playlistsCollection;
+}
+
+bool User::getHasAlreadyVoted(std::string _songName)
+{
+	return hasAlreadyVoted[_songName];
+}
+
+void User::setHasAlreadyVoted(std::string _songName, bool _hasAlreadyVoted)
+{
+	hasAlreadyVoted[_songName] = _hasAlreadyVoted;
 }
 
 bool User::isFromFavourites(std::string genre)

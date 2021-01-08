@@ -36,5 +36,6 @@ public:
 	void addSong();
 	void generatePlaylist(std::string user);
 	void loadPlaylistByName(std::string user);
+	void setRating(std::string user);
 	friend std::ostream& operator << (std::ostream& output, const ListOfUsers& listOfUsers);
 };

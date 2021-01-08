@@ -16,9 +16,19 @@ std::string Song::getName()
     return this->name;
 }
 
+void Song::setName(std::string _name)
+{
+    name = _name;
+}
+
 std::string Song::getSinger()
 {
     return this->singer;
+}
+
+void Song::setSinger(std::string _singer)
+{
+    singer = _singer;
 }
 
 std::string Song::getGenre()
@@ -26,19 +36,44 @@ std::string Song::getGenre()
     return this->genre;
 }
 
+void Song::setGenre(std::string _genre)
+{
+    genre = _genre;
+}
+
 std::string Song::getAlbum()
 {
     return this->album;
 }
 
-Date Song::getYear()
+void Song::setAlbum(std::string _album)
+{
+    album = _album;
+}
+
+int Song::getYear()
 {
     return this->year;
+}
+
+void Song::setYear(int _year)
+{
+    year = _year;
 }
 
 float Song::getRating()
 {
     return this->rating;
+}
+
+void Song::setRating(float _rating)
+{
+    rating = _rating;
+}
+
+float Song::getAverageRating(int numberOfUsers)
+{
+    return rating / numberOfUsers;
 }
 
 bool Song::operator < (const Song& s) const

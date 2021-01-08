@@ -20,11 +20,21 @@ public:
 		int _year, float _rating);
 
 	std::string getName();
+	void setName(std::string _name);
 	std::string getSinger();
+	void setSinger(std::string _singer);
 	std::string getGenre();
+	void setGenre(std::string _genre);
 	std::string getAlbum();
-	Date getYear();
+	void setAlbum(std::string _album);
+	int getYear();
+	void setYear(int _year);
 	float getRating();
+	void setRating(float _rating);
+
+	//void addToRating(float value);
+	float getAverageRating(int numberOfUsers);
+
 	bool operator < (const Song& s) const;
 	friend std::ostream& operator << (std::ostream& output, const Song& song);
 };

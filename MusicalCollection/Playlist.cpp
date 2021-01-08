@@ -33,6 +33,7 @@ void Playlist::addSongToPlaylist(Song song)
 std::ostream& operator << (std::ostream& output, const Playlist& playlist)
 {
 	output << std::endl << std::endl;
+	output << "~~~~~" << std::endl;
 	//output << playlist.number;
 	output << "Playlist " << playlist.name;
 	output << std::endl << std::endl;
@@ -44,6 +45,8 @@ std::ostream& operator << (std::ostream& output, const Playlist& playlist)
 		size == 1 ? output << s : output << s << std::endl;
 		--size;
 	}
+
+	output << "~~~~~";
 
 	return output;
 }

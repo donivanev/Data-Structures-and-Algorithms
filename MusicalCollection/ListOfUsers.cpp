@@ -111,17 +111,18 @@ void ListOfUsers::processExpression(std::string expression, std::vector<std::str
 //A function that searches the file for an user
 bool ListOfUsers::userExists(std::string username, std::string password)
 {
-	/*for (User user : listOfUsers)
+	for (User user : listOfUsers)
 	{
-		if (user.getUsername() == username && user.getPassword() == password)
+		//if (user.getUsername() == username && user.getPassword() == password)
+		if (user.getUsername() == username)
 		{
 			return true;
 		}
 	}
 
-	return false;*/
+	return false;
 
-	f_inout.open("users.txt");
+	/*f_inout.open("users.txt");
 
 	std::string line;
 	bool usr = false, pas = false;
@@ -155,7 +156,7 @@ bool ListOfUsers::userExists(std::string username, std::string password)
 	
 	f_inout.close();
 
-	return usr && pas;
+	return usr && pas;*/
 } 
 
 //A function that adds an user
@@ -264,10 +265,12 @@ void ListOfUsers::changeProfileData(std::string user)
 				u.removeGenre(g); 
 			}
 		}
-		std::vector<std::string> favGenres;
-		strToVector(u.getGenres(), favGenres); 
-	
-		listOfUsersHelper.push_back(User(u.getUsername(), u.getPassword(), u.getFullName(), u.getBirthdate(), favGenres, std::set<Playlist>()));
+		//std::vector<std::string> favGenres;
+		//strToVector(u.getGenres(), favGenres); 
+
+		//listOfUsersHelper.push_back(User(u.getUsername(), u.getPassword(), u.getFullName(), u.getBirthdate(), favGenres, std::set<Playlist>()));
+		listOfUsersHelper.push_back(User(u.getUsername(), u.getPassword(), u.getFullName(), u.getBirthdate(), 
+			                             u.getGenres(), u.getPlaylists()));
 	}
 
 	listOfUsers = listOfUsersHelper;
@@ -534,6 +537,64 @@ void ListOfUsers::loadPlaylistByName(std::string user)
 			//p.getName() == name => show information about the playlist
 		}
 	}
+}
+
+void ListOfUsers::setRating(std::string user)
+{
+	returnSongsToCollection();
+	std::string n;
+	float r;
+	std::cout << "Please type the name of the song you want to rate.\n";
+	std::cin.ignore();
+	std::getline(std::cin, n);
+	std::cout << "Please type the rating you give to this song.\n";
+	std::cin >> r;
+
+	std::set<Song> modifiedSongs;
+	std::vector<User> modifiedUsers;
+	int numberOfVotes = 0;
+
+	for (User u : listOfUsers)
+	{
+		if (u.getUsername() == user)
+		{
+			for (Song s : listOfSongs)
+			{
+				for (User u : listOfUsers)
+				{
+					if (u.getHasAlreadyVoted(s.getName()))
+					{
+						numberOfVotes++;
+					}
+				}
+
+				if (s.getName() == n && u.getHasAlreadyVoted(s.getName()) == true)
+				{
+					std::cout << "Sorry, but you can rate a song only once." << std::endl; 
+				}
+				else if (s.getName() == n)
+				{
+					float average = (s.getRating()) + r / (numberOfVotes + 1);
+					s.setRating(s.getRating() + r);
+					u.setHasAlreadyVoted(s.getName(), true);
+
+					//break;
+				}
+				else
+				{
+					u.setHasAlreadyVoted(s.getName(), false);
+				}
+
+				modifiedSongs.insert(s);
+			}
+		}
+		modifiedUsers.push_back(u);
+	}
+
+	listOfSongs = modifiedSongs;
+	listOfUsers = modifiedUsers;
+
+	saveSong(listOfSongs);
 }
 
 std::ostream& operator << (std::ostream& output, const ListOfUsers& list)
