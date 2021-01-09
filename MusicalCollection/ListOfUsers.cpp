@@ -298,7 +298,20 @@ void ListOfUsers::addSong()
 	saveSong(listOfSongs);
 }
 
-void ListOfUsers::generatePlaylist(std::string user)
+bool ListOfUsers::doesSongExist(std::string song)
+{
+	for (Song s : listOfSongs)
+	{
+		if (s.getName() == song)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+void ListOfUsers::generateAndSavePlaylist(std::string user)
 {
 	returnSongsToCollection();
 	std::cout << "Please choose from those following criteria and type one or more: " << std::endl;
@@ -527,16 +540,100 @@ void ListOfUsers::generatePlaylist(std::string user)
 void ListOfUsers::loadPlaylistByName(std::string user)
 {
 	std::string name;
+	std::cin.ignore();
 	std::getline(std::cin, name);
 
 	for (User u : listOfUsers)
 	{
 		if (u.getUsername() == user)
 		{
-			//u.searchInPlaylistsCollection(name);
-			//p.getName() == name => show information about the playlist
+			u.showSongsByPlaylist(name);
 		}
 	}
+}
+
+void ListOfUsers::returnInformationAboutTheVotes(std::map<std::string, std::vector<std::string>>& m)
+{
+	f_inout.open("votes.txt");
+
+	std::string line;
+	std::string song;
+	std::vector<std::string> arrOfUsers;
+	int index = 0;
+
+	while (std::getline(f_inout, line))
+	{
+		if (index == 0)
+		{
+			song = line;
+		}
+
+		index++;
+
+		if (index > 1 && line != "" && line != "_____")
+		{
+			arrOfUsers.push_back(line);
+		}
+
+		if (line.find("_____") != std::string::npos)
+		{
+			m.insert({ song, arrOfUsers });
+
+			arrOfUsers.clear();
+			index = 0;
+		}
+	}
+
+	f_inout.close();
+}
+
+//TODO - fullname to be with spaces - it works???
+//ListOfUsers.cpp - new playlist repair, it should be an empty playlist y
+//validate format - ?
+//returntocollections y wtht 
+//change collections -------------------------
+//set ratings
+//why add playlist at the same line? maybe because of load collections
+
+//Задаване на рейтинг на определена песен
+//Общият рейтинг на песен се определя като средна стойност от всички гласувания на потребители. 
+//Не трябва да позволявате на потребител да гласува повече от един път за дадена песен.
+
+bool ListOfUsers::haveUserRated(std::string user, std::string song, std::map<std::string, std::vector<std::string>> m)
+{
+	for (const auto& element : m)
+	{
+		if (element.first == song)
+		{
+			for (const auto& u : element.second)
+			{
+				if (u == user)
+				{
+					return true;
+				}
+			}
+		}
+	}
+
+	return false;
+}
+
+void ListOfUsers::saveVotes(std::map<std::string, std::vector<std::string>> m)
+{
+	f_inout.open("votes.txt");
+
+	for (const auto& element : m)
+	{
+		f_inout << element.first;
+		f_inout << "\n" << "\n";
+		for (const auto& arr : element.second)
+		{
+			f_inout << arr << "\n";
+		}
+		f_inout << "_____\n";
+	}
+
+	f_inout.close();
 }
 
 void ListOfUsers::setRating(std::string user)
@@ -547,11 +644,11 @@ void ListOfUsers::setRating(std::string user)
 	std::cout << "Please type the name of the song you want to rate.\n";
 	std::cin.ignore();
 	std::getline(std::cin, n);
-	std::cout << "Please type the rating you give to this song.\n";
-	std::cin >> r;
+
+	std::map<std::string, std::vector<std::string>> m;
+	returnInformationAboutTheVotes(m);
 
 	std::set<Song> modifiedSongs;
-	std::vector<User> modifiedUsers;
 	int numberOfVotes = 0;
 
 	for (User u : listOfUsers)
@@ -560,40 +657,42 @@ void ListOfUsers::setRating(std::string user)
 		{
 			for (Song s : listOfSongs)
 			{
-				for (User u : listOfUsers)
+				for (const auto& element : m)
 				{
-					if (u.getHasAlreadyVoted(s.getName()))
+					for (const auto& user : element.second)
 					{
 						numberOfVotes++;
 					}
-				}
+				} 
 
-				if (s.getName() == n && u.getHasAlreadyVoted(s.getName()) == true)
+				if (!doesSongExist(n))
+				{
+					std::cout << "Sorry, but there isn't a song with this name." << std::endl;
+					return;
+				}
+				if (s.getName() == n && haveUserRated(u.getUsername(), s.getName(), m) == true)
 				{
 					std::cout << "Sorry, but you can rate a song only once." << std::endl; 
+					return;
 				}
 				else if (s.getName() == n)
 				{
-					float average = (s.getRating()) + r / (numberOfVotes + 1);
-					s.setRating(s.getRating() + r);
-					u.setHasAlreadyVoted(s.getName(), true);
+					std::cout << "Please type the rating you give to this song.\n";
+					std::cin >> r;
 
-					//break;
-				}
-				else
-				{
-					u.setHasAlreadyVoted(s.getName(), false);
+					float average = (s.getRating() + r) / (numberOfVotes + 1);
+					s.setRating(s.getRating() + r);
+
+					m[s.getName()].push_back(user);
 				}
 
 				modifiedSongs.insert(s);
 			}
 		}
-		modifiedUsers.push_back(u);
+		saveVotes(m); 
 	}
 
 	listOfSongs = modifiedSongs;
-	listOfUsers = modifiedUsers;
-
 	saveSong(listOfSongs);
 }
 

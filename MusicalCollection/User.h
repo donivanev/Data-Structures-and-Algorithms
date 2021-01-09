@@ -17,11 +17,10 @@ private:
 	Date birthdate;
 	std::vector<std::string> favouriteGenres;
 	std::set<Playlist> playlistsCollection;
-	std::map<std::string, bool> hasAlreadyVoted;
 
 public:
-	User(std::string _username, std::string _password, std::string _fullName, Date _birthdate, 
-		 std::vector<std::string> _favouriteGenres, std::set<Playlist> _playlistsCollections);
+	User(std::string _username, std::string _password, std::string _fullName, Date _birthdate,
+		 std::vector<std::string> _favouriteGenres, std::set<Playlist> _playlistsCollection);
 
 	std::string getUsername();
 	void setUsername(std::string _username);
@@ -37,8 +36,9 @@ public:
 	void addGenre(std::string genre);
 	void removeGenre(std::string genre);
 	std::set<Playlist> getPlaylists();
-	bool getHasAlreadyVoted(std::string songName);
-	void setHasAlreadyVoted(std::string songName, bool _hasAlreadyVoted);
+	//bool getHasAlreadyVoted(std::string songName);
+	//void setHasAlreadyVoted(std::string songName, bool _hasAlreadyVoted);
+	void showSongsByPlaylist(std::string playlistName);
 
 	bool isFromFavourites(std::string genre);
 	void pushInPlaylist(Playlist playlist);

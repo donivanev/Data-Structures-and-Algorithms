@@ -108,28 +108,6 @@ void ConsoleHandler::actionsAfterLogIn()
 	std::cout << "8 - Exit" << std::endl;
 }
 
-bool ConsoleHandler::isAlreadyRegisteredUser(std::string username)
-{
-	//f_inout.open("users.txt");
-	//std::string line;
-	bool isAlreadyInCollection = false;
-
-	/*while (std::getline(f_inout, line))
-	{
-		if (line == username)
-		{
-			isAlreadyInCollection = true;
-		}
-	}*/
-	
-	//listOfUsers.isAlreadyRegisteredUser(username) ? true : false;
-		
-	//f_inout.close();
-
-	//return isAlreadyInCollection;r
-	return false;
-}
-
 void ConsoleHandler::loadDataToCollections()
 {
 	f_inout.open("users.txt");
@@ -138,7 +116,9 @@ void ConsoleHandler::loadDataToCollections()
 	std::vector<std::string> arrOfData;
 	std::vector<std::string> favGenres;
 	std::set<Playlist> playlists;
-	int index = 0, next = 0;
+	std::vector<std::string> songInfo;
+	int index = 0, next = 0, indexOfPlaylists = 0;
+	Playlist p;
 
 	while (std::getline(f_inout, line))
 	{
@@ -149,10 +129,49 @@ void ConsoleHandler::loadDataToCollections()
 
 		index++;
 
-		if(index > 4 && line != "___\r")
+		if((index > 4 && index < 7) && line != "___\r")
 		{
 			removeSpace(line);
 			strToVector(line, favGenres);
+		}
+
+		if (index > 7)
+		{
+			indexOfPlaylists++;
+		}
+
+		if (line.substr(0, line.find(" ")) == "Playlist")
+		{
+			std::string playlistName = line.substr(line.find(" ") + 1);
+			indexOfPlaylists++;
+
+			p.setName(playlistName);
+		}
+
+		if (indexOfPlaylists > 2 && line != " ")
+		{
+			if (line != "")
+			{
+				songInfo.push_back(line);
+			}
+		}
+
+		if (indexOfPlaylists > 2 && line != "" && songInfo.size() == 6)
+		{
+			int year = stoi(songInfo[4]);
+			float rating = stof(songInfo[5]);
+
+			Song s(songInfo[0], songInfo[1], songInfo[2], songInfo[3], year, rating);
+			p.addSongToPlaylist(s);
+			songInfo.clear();
+		}
+
+		if (indexOfPlaylists > 1 && line == "~~~~~")
+		{
+			playlists.insert(p);
+			Playlist newP;
+			p = newP;
+			indexOfPlaylists = 0;
 		}
 
 		if (line.find("___") != std::string::npos)
@@ -161,10 +180,18 @@ void ConsoleHandler::loadDataToCollections()
 			toDateFromFile(arrOfData[3], y, m, d);
 			Date date(y, m, d);
 
-			listOfUsers.addUser(arrOfData[0], arrOfData[1], arrOfData[2], date, favGenres, std::set<Playlist>());
+			//for (Playlist p : playlists)
+			//{
+				//std::cout << p << std::endl;
+			//}
+
+			//listOfUsers.addUser(arrOfData[0], arrOfData[1], arrOfData[2], date, favGenres, std::set<Playlist>());
+			listOfUsers.addUser(arrOfData[0], arrOfData[1], arrOfData[2], date, favGenres, playlists);
 			index = 0;
 			arrOfData.clear();
 			favGenres.clear();
+			playlists.clear();
+			songInfo.clear();
 		}
 	}
 
@@ -207,12 +234,10 @@ void ConsoleHandler::processCommand(std::string choice, std::string user, std::s
 			{
 				case 1: listOfUsers.changeProfileData(user); break;
 				case 2: listOfUsers.addSong(); break;
-				case 3: listOfUsers.generatePlaylist(user);  break;
-				case 4: /*listOfUsers.savePlaylistAs();*/ break;
-				case 5: /*listOfUsers.loadPlaylistByName();*/ break;
-				case 6: /*listOfUsers.showPlaylistInformation();*/ break;
-				case 7: listOfUsers.setRating(user); break;
-				case 8: return; break; 
+				case 3: listOfUsers.generateAndSavePlaylist(user);  break;
+				case 4: listOfUsers.loadPlaylistByName(user); break;
+				case 5: listOfUsers.setRating(user); break;
+				case 6: return; break; 
 
 				default: break;
 			}
@@ -232,7 +257,7 @@ void ConsoleHandler::processCommand(std::string choice, std::string user, std::s
 		std::vector<std::string> arrOfData;
 		std::vector<std::string> favGenres;
 		int y, m, d;
-		bool notValid = false;
+		bool notValid = false, alreadyExist = false;
 
 		while (info != "Submit")
 		{
@@ -256,17 +281,18 @@ void ConsoleHandler::processCommand(std::string choice, std::string user, std::s
 				}
 			}
 
-			if (arrOfData.size() == 1)
+			if (arrOfData.size() == 0)
 			{
 				if (listOfUsers.userExists(info, ""))
 				{
 					std::cout << "Sorry, but this username is already taken. Try another one." << std::endl;
 					
+					alreadyExist = true;
 					arrOfData.clear();
 				}
 			}
 
-			if (!notValid)
+			if (!notValid && !alreadyExist)
 			{
 				arrOfData.push_back(info);
 			}

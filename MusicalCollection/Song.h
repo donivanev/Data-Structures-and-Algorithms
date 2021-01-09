@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <string>
+#include <set>
 #include "Date.h"
 
 //A class that holds the information about the song
@@ -14,10 +15,11 @@ private:
 	std::string album;
 	int year;
 	float rating;	
+	std::set<std::string> usersWhoVoted;
 
 public:
 	Song(std::string _name, std::string _singer, std::string _genre, std::string _album, 
-		int _year, float _rating);
+		 int _year, float _rating);
 
 	std::string getName();
 	void setName(std::string _name);

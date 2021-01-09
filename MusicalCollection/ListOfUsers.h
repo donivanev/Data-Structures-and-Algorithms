@@ -34,8 +34,12 @@ public:
 	void returnSongsToCollection();
 	void changeProfileData(std::string user);
 	void addSong();
-	void generatePlaylist(std::string user);
+	bool doesSongExist(std::string song);
+	void generateAndSavePlaylist(std::string user);
 	void loadPlaylistByName(std::string user);
+	void returnInformationAboutTheVotes(std::map<std::string, std::vector<std::string>>& m);
+	bool haveUserRated(std::string user, std::string song, std::map<std::string, std::vector<std::string>> m);
+	void saveVotes(std::map<std::string, std::vector<std::string>> m);
 	void setRating(std::string user);
 	friend std::ostream& operator << (std::ostream& output, const ListOfUsers& listOfUsers);
 };

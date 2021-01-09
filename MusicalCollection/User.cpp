@@ -3,7 +3,7 @@
 //A constructor that initializes User data
 User::User(std::string _username = "", std::string _password = "", std::string _fullName = "", 
 	       Date _birthdate = Date(), std::vector<std::string> _favouriteGenres = std::vector<std::string>(),
-		   std::set<Playlist> _playlistsCollections = std::set<Playlist>())
+		   std::set<Playlist> _playlistsCollection = std::set<Playlist>())
 {
 	username = _username;
 	password = _password;
@@ -13,6 +13,11 @@ User::User(std::string _username = "", std::string _password = "", std::string _
 	for (std::string s : _favouriteGenres)
 	{
 		favouriteGenres.push_back(s);
+	}
+
+	for (Playlist p : _playlistsCollection)
+	{
+		playlistsCollection.insert(p);
 	}
 }
 
@@ -138,14 +143,23 @@ std::set<Playlist> User::getPlaylists()
 	return this->playlistsCollection;
 }
 
-bool User::getHasAlreadyVoted(std::string _songName)
+void User::showSongsByPlaylist(std::string playlistName)
 {
-	return hasAlreadyVoted[_songName];
-}
+	bool flag = false; 
 
-void User::setHasAlreadyVoted(std::string _songName, bool _hasAlreadyVoted)
-{
-	hasAlreadyVoted[_songName] = _hasAlreadyVoted;
+	for (Playlist p : playlistsCollection)
+	{
+		if (p.getName() == playlistName)
+		{
+			flag = true;
+			std::cout << p << std::endl;
+		}
+	}
+
+	if (!flag)
+	{
+		std::cout << "Sorry. No such playlist. Try another one.";
+	}
 }
 
 bool User::isFromFavourites(std::string genre)
