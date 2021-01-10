@@ -21,5 +21,5 @@ private:
 	void loadDataToCollections();
 
 public:
-	void processCommand(std::string choice, std::string user, std::string pass, bool& flag);
+	void processCommand(std::string choice, std::string user, std::string pass, bool& flag, bool& exit);
 };

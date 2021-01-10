@@ -100,12 +100,10 @@ void ConsoleHandler::actionsAfterLogIn()
 	std::cout << "Choose one of the following: " << std::endl;
 	std::cout << "1 - Change profile data" << std::endl;
 	std::cout << "2 - Add song" << std::endl;
-	std::cout << "3 - Generate playlist" << std::endl;
-	std::cout << "4 - Save this playlist" << std::endl;
-	std::cout << "5 - Load playlist" << std::endl;
-	std::cout << "6 - Information about all the songs in this playlist" << std::endl;
-	std::cout << "7 - Set rating" << std::endl;
-	std::cout << "8 - Exit" << std::endl;
+	std::cout << "3 - Generate and save playlist" << std::endl;
+	std::cout << "4 - Load playlist by name" << std::endl;
+	std::cout << "5 - Set rating" << std::endl;
+	std::cout << "6 - Exit" << std::endl;
 }
 
 void ConsoleHandler::loadDataToCollections()
@@ -200,7 +198,7 @@ void ConsoleHandler::loadDataToCollections()
 }
 
 //A function that processes all the commands from the console
-void ConsoleHandler::processCommand(std::string choice, std::string user, std::string pass, bool& flag)
+void ConsoleHandler::processCommand(std::string choice, std::string user, std::string pass, bool& flag, bool& exit)
 {
 	if (!flag)
 	{
@@ -218,30 +216,35 @@ void ConsoleHandler::processCommand(std::string choice, std::string user, std::s
 			//listOfUsers.printUsers();
 
 			int number, i = 0;
+			std::cin >> number;
 
 			do
 			{
 				if (i != 0)
 				{
 					std::cout << "Wrong number. Choose a number between 1 and 8." << std::endl;
+
+					std::cin >> number;
+					i++;
 				}
-				std::cin >> number;
-				i++;
+					
+				switch (number)
+				{
+					case 1: listOfUsers.changeProfileData(user); break;
+					case 2: listOfUsers.addSong(); break;
+					case 3: listOfUsers.generateAndSavePlaylist(user);  break;
+					case 4: listOfUsers.loadPlaylistByName(user); break;
+					case 5: listOfUsers.setRating(user); break;
+					case 6: exit = true; return; break;
 
-			} while (!(number > 0 && number < 9));
+					default: break;
+				}
+				save();
+				actionsAfterLogIn();
+		
+			} while (!(number > 0 && number < 7));
 
-			switch (number)
-			{
-				case 1: listOfUsers.changeProfileData(user); break;
-				case 2: listOfUsers.addSong(); break;
-				case 3: listOfUsers.generateAndSavePlaylist(user);  break;
-				case 4: listOfUsers.loadPlaylistByName(user); break;
-				case 5: listOfUsers.setRating(user); break;
-				case 6: return; break; 
-
-				default: break;
-			}
-			save();
+			//save();
 		}
 		else
 		{
@@ -251,7 +254,7 @@ void ConsoleHandler::processCommand(std::string choice, std::string user, std::s
 	else if (choice == "Sign up")
 	{
 		std::cout << "Please enter on a separate lines the following things: " <<
-			"\nusername, password, fullname, birthdate and your favourite genres." << std::endl;
+			"\nusername, password, fullname, birthdate and your favourite genres. Then type Submit." << std::endl;
 
 		std::string info;
 		std::vector<std::string> arrOfData;
@@ -307,6 +310,7 @@ void ConsoleHandler::processCommand(std::string choice, std::string user, std::s
 		Date date(y, m, d);
 
 		listOfUsers.addUser(arrOfData[1], arrOfData[2], arrOfData[3], date, favGenres, std::set<Playlist>()); 
+		std::cout << "Successfully created user!" << std::endl;
 		//listOfUsers.printUsers();
 		save();
 	}

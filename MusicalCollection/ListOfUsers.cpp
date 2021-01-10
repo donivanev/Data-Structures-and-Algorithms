@@ -280,7 +280,7 @@ void ListOfUsers::changeProfileData(std::string user)
 void ListOfUsers::addSong()
 {
 	std::cout << "Please enter on a separate lines the following things: " <<
-		"\nname, singer, genre, album, year, rating." << std::endl;
+		"\nname, singer, genre, album, year, rating. Then type Submit." << std::endl;
 
 	std::string info;
 	std::vector<std::string> arrOfData; 
@@ -296,6 +296,7 @@ void ListOfUsers::addSong()
 	returnSongsToCollection();
 	listOfSongs.insert(song);
 	saveSong(listOfSongs);
+	std::cout << "Successfully added song!";
 }
 
 bool ListOfUsers::doesSongExist(std::string song)
@@ -312,7 +313,7 @@ bool ListOfUsers::doesSongExist(std::string song)
 }
 
 void ListOfUsers::generateAndSavePlaylist(std::string user)
-{
+{   
 	returnSongsToCollection();
 	std::cout << "Please choose from those following criteria and type one or more: " << std::endl;
 	std::cout << "1. Rating bigger than a certain value (> [value])." << std::endl;
@@ -587,14 +588,6 @@ void ListOfUsers::returnInformationAboutTheVotes(std::map<std::string, std::vect
 	f_inout.close();
 }
 
-//TODO - fullname to be with spaces - it works???
-//ListOfUsers.cpp - new playlist repair, it should be an empty playlist y
-//validate format - ?
-//returntocollections y wtht 
-//change collections -------------------------
-//set ratings
-//why add playlist at the same line? maybe because of load collections
-
 //Задаване на рейтинг на определена песен
 //Общият рейтинг на песен се определя като средна стойност от всички гласувания на потребители. 
 //Не трябва да позволявате на потребител да гласува повече от един път за дадена песен.
@@ -657,14 +650,6 @@ void ListOfUsers::setRating(std::string user)
 		{
 			for (Song s : listOfSongs)
 			{
-				for (const auto& element : m)
-				{
-					for (const auto& user : element.second)
-					{
-						numberOfVotes++;
-					}
-				} 
-
 				if (!doesSongExist(n))
 				{
 					std::cout << "Sorry, but there isn't a song with this name." << std::endl;
@@ -677,6 +662,17 @@ void ListOfUsers::setRating(std::string user)
 				}
 				else if (s.getName() == n)
 				{
+					for (const auto& element : m)
+					{
+						if (element.first == n)
+						{
+							for (const auto& user : element.second)
+							{
+								numberOfVotes++;
+							}
+						}
+					}
+
 					std::cout << "Please type the rating you give to this song.\n";
 					std::cin >> r;
 
